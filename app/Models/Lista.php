@@ -20,6 +20,6 @@ class Lista extends Model
 
     public function itens()
     {
-        return $this->hasMany(Item::class);
+        return $this->hasMany(ItemLista::class);
     }
 }

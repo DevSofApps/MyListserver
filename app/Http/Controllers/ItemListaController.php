@@ -2,19 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemRequestLista;
+use App\Http\Resources\ItemListaResource;
 use App\Models\ItemLista;
+use App\Models\Lista;
 use Illuminate\Http\Request;
 
 class ItemListaController extends Controller
 {
+    private $item;
+    public function __construct(ItemLista $item)
+    {
+        $this->item = $item;
+    }
+
+
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $lista = Lista::find($id);
+        if (!$lista) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+        $itens = $lista->itens;
+        return response()->json(["data" => $itens], 200);
     }
 
     /**
@@ -33,9 +49,10 @@ class ItemListaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ItemRequestLista $request)
     {
-        //
+        $item = $this->item->create($request->all());
+        return new ItemListaResource($item);
     }
 
     /**
@@ -44,9 +61,10 @@ class ItemListaController extends Controller
      * @param  \App\Models\ItemLista  $itemLista
      * @return \Illuminate\Http\Response
      */
-    public function show(ItemLista $itemLista)
+    public function show($listaId, $id)
     {
-        //
+        $item = $this->item->where('id', $id)->where('lista_id', $listaId)->get();
+        return $item;
     }
 
     /**
@@ -55,7 +73,7 @@ class ItemListaController extends Controller
      * @param  \App\Models\ItemLista  $itemLista
      * @return \Illuminate\Http\Response
      */
-    public function edit(ItemLista $itemLista)
+    public function edit(ItemRequestLista $request, $id)
     {
         //
     }
@@ -67,9 +85,26 @@ class ItemListaController extends Controller
      * @param  \App\Models\ItemLista  $itemLista
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ItemLista $itemLista)
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'string|max:255',
+            'quantidade' => 'required|numeric',
+            'preco' => 'numeric|required'
+        ]);
+        $item = $this->item->find($request->id);
+
+        if (!$item) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+
+        $item->update([
+            "name" => $request->name,
+            "quantidade" => $request->quantidade,
+            "preco" => $request->preco,
+            "comprado" => $request->comprado,
+        ]);
+        return new ItemListaResource($item);
     }
 
     /**
@@ -78,8 +113,14 @@ class ItemListaController extends Controller
      * @param  \App\Models\ItemLista  $itemLista
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ItemLista $itemLista)
+    public function destroy($id)
     {
-        //
+        $item = $this->item->find($id);
+        if (!$item) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+
+        $item->delete();
+        return response()->json([], 204);
     }
 }

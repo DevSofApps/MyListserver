@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RequestLista;
+use App\Http\Resources\ListaResource;
 use App\Models\Lista;
 use Illuminate\Http\Request;
 
@@ -34,13 +36,8 @@ class ListaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(RequestLista  $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id'
-        ]);
-
         $lista = Lista::create($request->all());
         return $lista;
     }
@@ -51,9 +48,13 @@ class ListaController extends Controller
      * @param  \App\Models\Lista  $lista
      * @return \Illuminate\Http\Response
      */
-    public function show(Lista $lista)
+    public function show($id)
     {
-        //
+        $lista = Lista::find($id);
+        if (!$lista) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+        return new ListaResource($lista);
     }
 
     /**
@@ -74,9 +75,15 @@ class ListaController extends Controller
      * @param  \App\Models\Lista  $lista
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Lista $lista)
+    public function update(RequestLista $request, $id)
     {
-        //
+        $lista = Lista::find($id);
+        if (!$lista) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+
+        $lista->update($request->all());
+        return new ListaResource($lista);
     }
 
     /**
@@ -85,8 +92,14 @@ class ListaController extends Controller
      * @param  \App\Models\Lista  $lista
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Lista $lista)
+    public function destroy($id)
     {
-        //
+        $lista = Lista::find($id);
+        if (!$lista) {
+            return response()->json(["error" => '404 Not Found'], 404);
+        }
+
+        $lista->delett();
+        return response()->json([], 204);
     }
 }

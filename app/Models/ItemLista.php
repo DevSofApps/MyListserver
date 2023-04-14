@@ -9,7 +9,7 @@ class ItemLista extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'nome',
+        'name',
         'quantidade',
         'preco',
         'comprado',
