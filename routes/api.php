@@ -17,22 +17,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+
+
+    Route::get('/listas', [ListaController::class, 'index']);
+    Route::get('/listas/{id}', [ListaController::class, 'show']);
+    Route::post('/lista', [ListaController::class, 'store']);
+
+    Route::post('/item', [ItemListaController::class, 'store']);
+    Route::get('/{id}/itens', [ItemListaController::class, 'index']);
+    Route::get('/{listaId}/{id}/item', [ItemListaController::class, 'show']);
+    Route::put('/itens', [ItemListaController::class, 'update']);
 });
-
-Route::get('/listas', [ListaController::class, 'index']);
-Route::get('/listas/{id}', [ListaController::class, 'show']);
-Route::post('/lista', [ListaController::class, 'store']);
-
-Route::post('/item', [ItemListaController::class, 'store']);
-Route::get('/{id}/itens', [ItemListaController::class, 'index']);
-Route::get('/{listaId}/{id}/item', [ItemListaController::class, 'show']);
-Route::put('/itens', [ItemListaController::class, 'update']);
