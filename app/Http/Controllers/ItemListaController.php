@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ItemRequestLista;
+use App\Http\Requests\ItemUpdateRequest;
 use App\Http\Resources\ItemListaResource;
 use App\Models\ItemLista;
 use App\Models\Lista;
@@ -34,16 +35,6 @@ class ItemListaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -68,30 +59,14 @@ class ItemListaController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\ItemLista  $itemLista
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(ItemRequestLista $request, $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\ItemLista  $itemLista
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(ItemUpdateRequest $request)
     {
-        $request->validate([
-            'name' => 'string|max:255',
-            'quantidade' => 'required|numeric',
-            'preco' => 'numeric|required'
-        ]);
         $item = $this->item->find($request->id);
 
         if (!$item) {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -10,19 +12,8 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validator = Validator($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|confirmed|min:8',
-            'is_admin' => 'sometimes|boolean'
-        ]);
-
-        if ($validator->fails()) {
-            return  response()->json(['errors' => $validator->errors()], 400);
-        }
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -36,12 +27,8 @@ class AuthController extends Controller
         return $resource->response()->setStatusCode(201);
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string'
-        ]);
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return response()->json([
