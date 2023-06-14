@@ -29,7 +29,7 @@ class ListaController extends Controller
     public function store(RequestLista  $request)
     {
         $lista = Lista::create($request->all());
-        return $lista;
+        return new ListaResource($lista);
     }
 
     /**
