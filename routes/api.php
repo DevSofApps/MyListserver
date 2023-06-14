@@ -23,6 +23,7 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/validate-token', [AuthController::class, 'validateToken']);
 
     Route::get('/listas', [ListaController::class, 'index']);
     Route::get('/listas/{id}', [ListaController::class, 'show']);
