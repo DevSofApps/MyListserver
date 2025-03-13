@@ -1,5 +1,5 @@
-# Imagem base PHP 8.4.4 com Apache
-FROM php:8.4.4-apache
+# Imagem base PHP 8.2 com Apache
+FROM php:8.2-apache
 
 # Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
