@@ -28,14 +28,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Definir diretório de trabalho
 WORKDIR /var/www/html
 
-# Copiar arquivos do projeto, incluindo o .env
+# Copiar arquivos do projeto
 COPY . .
+
+# Instalar dependências do Composer (antes de gerar a chave)
+RUN composer install --no-dev --optimize-autoloader
 
 # Gerar chave do Laravel
 RUN php artisan key:generate
-
-# Instalar dependências do Composer
-RUN composer install --no-dev --optimize-autoloader
 
 # Configurar permissões para diretórios necessários
 RUN chown -R www-data:www-data /var/www/html && \
